@@ -23,6 +23,7 @@ library(quantmod)
 library(xts)
 library(fGarch)
 library(rugarch)
+library(patchwork)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -98,7 +99,7 @@ ggplot(data = clean, aes(x = as.factor(intolerance_1), colour = as.factor(intole
   #scale_colour_gradient(low="blue", high="red") +  theme_dark()
   #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
   #scale_shape_manual(values = c(1,23))
-ggsave("happiness_dim1_line.png")
+#ggsave("happiness_dim1_line.png")
 
 # dimension 2 plot
 ggplot(data = clean, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
@@ -112,7 +113,7 @@ ggplot(data = clean, aes(x = as.factor(intolerance_1), colour = as.factor(intole
   #scale_colour_gradient(low="blue", high="red") +  theme_dark()
   #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
   #scale_shape_manual(values = c(1,23))
-ggsave("happiness_dim2_line.png")
+#ggsave("happiness_dim2_line.png")
 ```
 ```{r}
 ggplot(data = clean, aes(x = intolerance_1, colour = intolerance_2)) +
@@ -165,8 +166,271 @@ ggplot(data = data_single, aes(x = X)) +
 ggsave("Hapiness_dim2_singlerun.png")
 ```
 
+# looking at the batch run with four variables:
+```{r}
+df4v <- read.csv("seg_model_batch_run_data_4vars.csv")
+```
 
 
+```{r}
+# getting the subsets I am interested in: only when minority_pcs_1 == minority_pc_2
+df4v_0.1 <- df4v[df4v$minority_pc_1 == 0.1,] %>% 
+  group_by(intolerance_1, intolerance_2) %>% 
+  summarise(across(everything(), mean), .groups = 'drop')  %>%
+  as.data.frame()
+df4v_0.2 <- df4v[df4v$minority_pc_1 == 0.2,] %>% 
+  group_by(intolerance_1, intolerance_2) %>% 
+  summarise(across(everything(), mean), .groups = 'drop')  %>%
+  as.data.frame()
+df4v_0.3 <- df4v[df4v$minority_pc_1 == "0.3",] %>% 
+  group_by(intolerance_1, intolerance_2) %>% 
+  summarise(across(everything(), mean), .groups = 'drop')  %>%
+  as.data.frame()
+df4v_0.4 <- df4v[df4v$minority_pc_1 == 0.4,] %>% 
+  group_by(intolerance_1, intolerance_2) %>% 
+  summarise(across(everything(), mean), .groups = 'drop')  %>%
+  as.data.frame()
+df4v_0.5 <- df4v[df4v$minority_pc_1 == 0.5,] %>% 
+  group_by(intolerance_1, intolerance_2) %>% 
+  summarise(across(everything(), mean), .groups = 'drop')  %>%
+  as.data.frame()
+```
+
+```{r}
+df4v[30,4] == "0.3"
+```
 
 
+```{r}
+# minority percent is 0.1
+ggplot(data = df4v_0.1, aes(x = intolerance_1, colour = Pct.Happy)) +
+  labs(y = "Intolerance level for Dimension 2", 
+       x = "Intolerance level for Dimension 1", 
+       title = "Happiness by Combination of Intolerance Levels", 
+       subtitle = "Minority Percentage = 0.1 (in both dimensions)",
+       colour = "Percent of \n Happy Agents \n") +
+  geom_rect(aes(xmin=0.6875,xmax=0.8125,ymin=-Inf,ymax=0.8125), alpha= 0.5,fill="grey33", color = "grey33")+
+  geom_rect(aes(xmin=-Inf,xmax=0.8125,ymin=0.6875,ymax=0.8125), alpha= 0.5,fill="grey33", , color = "grey33")+
+  geom_point(aes(y = intolerance_2  ), size = 5) +
+  #theme_bw() +
+  #scale_colour_gradient(low="red", high="blue") +  theme_dark()
+  scale_colour_distiller(palette = "Spectral")
+ggsave("total_happiness_scatter2_min01.png")
+
+# minority percent is 0.2
+ggplot(data = df4v_0.2, aes(x = intolerance_1, colour = Pct.Happy)) +
+  labs(y = "Intolerance level for Dimension 2", 
+       x = "Intolerance level for Dimension 1", 
+       title = "Happiness by Combination of Intolerance Levels",
+       subtitle = "Minority Percentage = 0.2 (in both dimensions)",
+       colour = "Percent of \n Happy Agents \n") +
+  geom_rect(aes(xmin=0.5625,xmax=0.8125,ymin=-Inf,ymax=0.8125), alpha= 0.5,fill="grey33", color = "grey33")+
+  geom_rect(aes(xmin=-Inf,xmax=0.8125,ymin=0.5625,ymax=0.8125), alpha= 0.5,fill="grey33", , color = "grey33")+
+  geom_point(aes(y = intolerance_2  ), size = 5) +
+  #theme_bw() +
+  #scale_colour_gradient(low="red", high="blue") +  theme_dark()
+  scale_colour_distiller(palette = "Spectral")
+ggsave("total_happiness_scatter2_min02.png")
+
+# minority percent is 0.3
+ggplot(data = df4v_0.3, aes(x = intolerance_1, colour = Pct.Happy)) +
+  labs(y = "Intolerance level for Dimension 2", 
+       x = "Intolerance level for Dimension 1", 
+       title = "Happiness by Combination of Intolerance Levels", 
+       subtitle = "Minority Percentage = 0.3 (in both dimensions)",
+       colour = "Percent of \n Happy Agents \n") +
+  geom_rect(aes(xmin=0.5625,xmax=0.6875,ymin=-Inf,ymax=0.6875), alpha= 0.5,fill="grey33", color = "grey33")+
+  geom_rect(aes(xmin=-Inf,xmax=0.6875,ymin=0.5625,ymax=0.6875), alpha= 0.5,fill="grey33", , color = "grey33")+
+  geom_point(aes(y = intolerance_2  ), size = 5) +
+  #theme_bw() +
+  #scale_colour_gradient(low="red", high="blue") +  theme_dark()
+  scale_colour_distiller(palette = "Spectral")
+ggsave("total_happiness_scatter2_min03.png")
+
+# minority percent is 0.4
+ggplot(data = df4v_0.4, aes(x = intolerance_1, colour = Pct.Happy)) +
+  labs(y = "Intolerance level for Dimension 2", 
+       x = "Intolerance level for Dimension 1", 
+       title = "Happiness by Combination of Intolerance Levels", 
+       subtitle = "Minority Percentage = 0.4 (in both dimensions)",
+       colour = "Percent of \n Happy Agents \n") +
+  geom_rect(aes(xmin=0.5625,xmax=0.6875,ymin=-Inf,ymax=0.6875), alpha= 0.5,fill="grey33", color = "grey33")+
+  geom_rect(aes(xmin=-Inf,xmax=0.6875,ymin=0.5625,ymax=0.6875), alpha= 0.5,fill="grey33", , color = "grey33")+
+  geom_point(aes(y = intolerance_2  ), size = 5) +
+  #theme_bw() +
+  #scale_colour_gradient(low="red", high="blue") +  theme_dark()
+  scale_colour_distiller(palette = "Spectral")
+ggsave("total_happiness_scatter2_min04.png")
+
+# minority percent is 0.5
+ggplot(data = df4v_0.5, aes(x = intolerance_1, colour = Pct.Happy)) +
+  labs(y = "Intolerance level for Dimension 2", 
+       x = "Intolerance level for Dimension 1", 
+       title = "Happiness by Combination of Intolerance Levels", 
+       subtitle = "Minority Percentage = 0.5 (in both dimensions)",
+       colour = "Percent of \n Happy Agents \n") +
+  geom_rect(aes(xmin=0.5625,xmax=0.6875,ymin=-Inf,ymax=0.6875), alpha= 0.5,fill="grey33", color = "grey33")+
+  geom_rect(aes(xmin=-Inf,xmax=0.6875,ymin=0.5625,ymax=0.6875), alpha= 0.5,fill="grey33", , color = "grey33")+
+  geom_point(aes(y = intolerance_2  ), size = 5) +
+  #theme_bw() + 
+  #scale_colour_gradient(low="red", high="blue") +  theme_dark()
+  scale_colour_distiller(palette = "Spectral")
+ggsave("total_happiness_scatter2_min05.png")
+```
+
+
+```{r}
+# secon plot ( both dim 1 and dim 2)
+
+# minority percentage = 0.1
+ggplot(data = df4v_0.1, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.1, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.1, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 1 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.1 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim1_line_min01.png")
+
+# dimension 2 plot
+ggplot(data = df4v_0.1, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.2, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.2, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 2 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.1 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim2_line_min01.png")
+
+# minority percentage = 0.2
+ggplot(data = df4v_0.2, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.1, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.1, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 1 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.2 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim1_line_min02.png")
+
+# dimension 2 plot
+ggplot(data = df4v_0.2, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.2, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.2, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 2 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.2 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim2_line_min02.png")
+
+# minority percentage = 0.3
+ggplot(data = df4v_0.3, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.1, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.1, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 1 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.3 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim1_line_min03.png")
+
+# dimension 2 plot
+ggplot(data = df4v_0.3, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.2, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.2, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 2 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.3 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim2_line_min03.png")
+
+# minority percentage = 0.4
+ggplot(data = df4v_0.4, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.1, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.1, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 1 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.4 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim1_line_min04.png")
+
+# dimension 2 plot
+ggplot(data = df4v_0.4, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.2, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.2, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 2 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.4 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim2_line_min04.png")
+
+# minority percentage = 0.5
+ggplot(data = df4v_0.5, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.1, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.1, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 1 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.5 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim1_line_min05.png")
+
+# dimension 2 plot
+ggplot(data = df4v_0.5, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.2, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.2, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 2 vs. Intolerance Levels",
+       subtitle = "Minority Percentage = 0.5 (in both dimensions)",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim2_line_min05.png")
+
+```
 
