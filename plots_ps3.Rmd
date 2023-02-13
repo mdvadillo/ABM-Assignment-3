@@ -27,6 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+# Batch Run Analysis
 ```{r}
 # importing dataframe
 df <- read.csv("seg_model_batch_run_data.csv")
@@ -69,6 +70,38 @@ ggplot(data = clean, aes(x = intolerance_1, group = intolerance_2, colour = into
 ggsave("total_happiness_lines.png")
 ```
 
+```{r}
+ggplot(data = clean, aes(x = intolerance_1, colour = intolerance_2)) +
+  geom_point(aes(y = Pct.Happy.Group.A.dim.1 ), size = 4, alpha = 2, shape = 20) +
+  geom_point(aes(y = Pct.Happy.Group.B.dim.1 ), size = 4, alpha = 2, shape = 2) +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 1 vs. Intolerance Levels",
+       caption = "Triangles denote the minority group, filled circles denote the majority group") +
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim1_scatter.png")
+```
+```{r}
+ggplot(data = clean, aes(x = intolerance_1, colour = intolerance_2)) +
+  geom_point(aes(y = Pct.Happy.Group.A.dim.2 ), size = 4, alpha = 2, shape = 20) +
+  geom_point(aes(y = Pct.Happy.Group.B.dim.2 ), size = 4, alpha = 2, shape = 2) +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 2", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 2 vs. Intolerance Levels",
+       caption = "Triangles denote the minority group, filled circles denote the majority group") +
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  scale_colour_distiller(palette = "YlOrRd")  +  theme_dark()
+ggsave("happiness_dim2_scatter.png")
+```
+
+
+
+
+# Single Run Analysis
 ```{r}
 data_single <- read.csv("seg_model_single_run_very_intolerant_data.csv")
 ```
