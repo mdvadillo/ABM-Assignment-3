@@ -1,0 +1,81 @@
+---
+title: "plots_ps3"
+author: "Daniela Vadillo"
+date: "2023-02-13"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(MASS)
+library(gridExtra)
+library(tidyverse)
+library(mosaic)
+library(broom)
+library(zoo)
+library(lmtest)
+library(sandwich)
+library(dplyr)
+library(car)
+library(jtools)
+library(AER)
+library(fBasics)
+library(quantmod)
+library(xts)
+library(fGarch)
+library(rugarch)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+# importing dataframe
+df <- read.csv("seg_model_batch_run_data.csv")
+```
+
+
+```{r}
+# group by intolerance level to plot
+clean <- df %>% group_by(intolerance_1, intolerance_2) %>% 
+  summarise(across(everything(), mean), .groups = 'drop')  %>%
+  as.data.frame()
+
+# deleting variables we don't need
+clean <- clean[,-c(3,4,9,10,11,12,21,22,23,24,25,26,27,28)]
+```
+
+```{r}
+colnames(clean)
+```
+
+
+```{r}
+ggplot(data = clean, aes(x = intolerance_1, colour = intolerance_2)) +
+  geom_point(aes(y = Pct.Happy ), size = 4, alpha = 2) +
+  labs(y = "Percent of Agents that Are Happy", x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", title = "Happiness vs. Intolerance Levels") +
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  scale_colour_distiller(palette = "YlOrRd")  +  theme_dark()
+ggsave("total_happiness_scatter.png")
+```
+
+```{r}
+ggplot(data = clean, aes(x = intolerance_1, group = intolerance_2, colour = intolerance_2)) +
+  #geom_point(aes(y = Pct.Happy ), size = 4, alpha = 2) +
+  geom_line(aes(y = Pct.Happy, group = intolerance_2), size = 1.5) +
+  labs(y = "Percent of Agents that Are Happy", x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", title = "Happiness vs. Intolerance Levels") +
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  scale_colour_distiller(palette = "YlOrRd")  +  theme_dark()
+ggsave("total_happiness_lines.png")
+```
+
+
+
+
+
+
+
+
+
+
+
