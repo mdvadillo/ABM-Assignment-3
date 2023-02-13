@@ -48,8 +48,24 @@ clean <- clean[,-c(3,4,9,10,11,12,21,22,23,24,25,26,27,28)]
 colnames(clean)
 ```
 
+```{r}
+ggplot(data = clean, aes(x = intolerance_1, colour = Pct.Happy)) +
+  labs(y = "Intolerance level for Dimension 2", 
+       x = "Intolerance level for Dimension 1", 
+       title = "Happiness by Combination of Intolerance Levels", 
+       colour = "Percent of \n Happy Agents \n") +
+  geom_rect(aes(xmin=0.5625,xmax=0.6875,ymin=-Inf,ymax=0.6875), alpha= 0.5,fill="grey33", color = "grey33")+
+  geom_rect(aes(xmin=-Inf,xmax=0.6875,ymin=0.5625,ymax=0.6875), alpha= 0.5,fill="grey33", , color = "grey33")+
+  geom_point(aes(y = intolerance_2  ), size = 5) +
+  theme_bw() +
+  #scale_colour_gradient(low="red", high="blue") +  theme_dark()
+  scale_colour_distiller(palette = "Spectral")
+ggsave("total_happiness_scatter2.png")
+```
+
 
 ```{r}
+# remade this one above, don't use this plot
 ggplot(data = clean, aes(x = intolerance_1, colour = intolerance_2)) +
   geom_point(aes(y = Pct.Happy ), size = 4, alpha = 2) +
   labs(y = "Percent of Agents that Are Happy", x = "Intolerance level for Dimension 1", 
@@ -71,18 +87,32 @@ ggsave("total_happiness_lines.png")
 ```
 
 ```{r}
-ggplot(data = clean, aes(x = intolerance_1, colour = intolerance_2)) +
-  geom_point(aes(y = Pct.Happy.Group.A.dim.1 ), size = 4, alpha = 2, shape = 20) +
-  geom_point(aes(y = Pct.Happy.Group.B.dim.1 ), size = 4, alpha = 2, shape = 2) +
+ggplot(data = clean, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.1, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.1, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
   labs(y = "Percent of Agents that Are Happy", 
        x = "Intolerance level for Dimension 1", 
        colour = "Intolerance \n level for \n Dimension 2", 
        title = "Happiness Across Dimension 1 vs. Intolerance Levels",
-       caption = "Triangles denote the minority group, filled circles denote the majority group") +
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
   #scale_colour_gradient(low="blue", high="red") +  theme_dark()
-  scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
-  scale_shape_manual(values = c(1,23))
-ggsave("happiness_dim1_scatter.png")
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim1_line.png")
+
+# dimension 2 plot
+ggplot(data = clean, aes(x = as.factor(intolerance_1), colour = as.factor(intolerance_2))) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.2, group = as.factor(intolerance_2)), size = 1.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.2, group = as.factor(intolerance_2)), size = 1, linetype = "dashed") +
+  labs(y = "Percent of Agents that Are Happy", 
+       x = "Intolerance level for Dimension 1", 
+       colour = "Intolerance \n level for \n Dimension 2", 
+       title = "Happiness Across Dimension 2 vs. Intolerance Levels",
+       caption = "Dashed lines denote the minority group, continuous lines denote the majority group")
+  #scale_colour_gradient(low="blue", high="red") +  theme_dark()
+  #scale_colour_distiller(palette = "YlOrRd")  +  theme_dark() +
+  #scale_shape_manual(values = c(1,23))
+ggsave("happiness_dim2_line.png")
 ```
 ```{r}
 ggplot(data = clean, aes(x = intolerance_1, colour = intolerance_2)) +
