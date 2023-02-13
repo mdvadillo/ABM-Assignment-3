@@ -69,10 +69,38 @@ ggplot(data = clean, aes(x = intolerance_1, group = intolerance_2, colour = into
 ggsave("total_happiness_lines.png")
 ```
 
+```{r}
+data_single <- read.csv("seg_model_single_run_very_intolerant_data.csv")
+```
 
+```{r}
+ggplot(data = data_single, aes(x = X)) +
+  geom_line(aes(y = Pct.Happy)) +
+  labs(x = "Step", y = "Percent of All Agents that are Happy")
+```
 
-
-
+```{r}
+# B is the minority
+# A is the majority
+ggplot(data = data_single, aes(x = X)) +
+  geom_line(aes(y = Pct.Happy, color = "Everyone")) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.1, color = "Majority"), alpha = 0.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.1, color = "Minority"), alpha = 0.5) +
+  labs(x = "Step", y = "Percent of Happy Agents", title = "Happiness Accros Dimension 1") +
+   scale_color_manual(values=c("black","red","blue"))
+ggsave("Hapiness_dim1_singlerun.png")
+```
+```{r}
+# B is the minority
+# A is the majority
+ggplot(data = data_single, aes(x = X)) +
+  geom_line(aes(y = Pct.Happy, color = "Everyone")) +
+  geom_line(aes(y = Pct.Happy.Group.A.dim.2, color = "Majority"), alpha = 0.5) +
+  geom_line(aes(y = Pct.Happy.Group.B.dim.2, color = "Minority"), alpha = 0.5) +
+  labs(x = "Step", y = "Percent of Happy Agents", title = "Happiness Accros Dimension 2") +
+   scale_color_manual(values=c("black","red","blue"))
+ggsave("Hapiness_dim2_singlerun.png")
+```
 
 
 
