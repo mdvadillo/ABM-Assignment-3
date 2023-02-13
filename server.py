@@ -13,35 +13,27 @@ def schelling_draw(agent):
         return
     portrayal = {"Filled": "true", "Layer": 0}
 
-    if agent.type_1 == 0 and agent.type_2 == 1:
+# difference in dimension 1 are portrayed by color -- purples are majority, blues are minority 
+# difference in dimension 2 are protrayed by shape -- circle is majority, square in minority 
+    if agent.type_1 == 1 and agent.type_2 == 0:
         portrayal["Shape"] = "circle"
         portrayal["r"] = "0.5"
         portrayal["Color"] = "steelblue"
-    elif agent.type_1 == 1 and agent.type_2 == 1:
-        portrayal["Shape"] = "circle"
-        portrayal["r"] = "0.5"
-        portrayal["Color"] = "darkmagenta"
     elif agent.type_1 == 0 and agent.type_2 == 0:
-        portrayal["Shape"] = "rect"
-        portrayal["w"] = "0.3"
-        portrayal["h"] = "0.3"
-        portrayal["Color"] = "steelblue"
-    elif agent.type_1 == 1 and agent.type_2 == 0:
-        portrayal["Color"] = "darkmagenta"
-        portrayal["Shape"] = "rect"
-        portrayal["w"] = "0.3"
-        portrayal["h"] = "0.3"
-
-    if agent.type_2 == 1:
         portrayal["Shape"] = "circle"
         portrayal["r"] = "0.5"
-    #else:
-        #portrayal["Shape"] = "circle"
-        #portrayal["r"] = "0.5"
-    #elif agent.type_1 == 0 and agent.type_2 == 1:
-        #portrayal["Color"] = "mediumseagreen"
-    #elif agent.type_1 == 1 and agent.type_2 == 1:
-        #portrayal["Color"] = "Black"
+        portrayal["Color"] = "darkmagenta"
+    elif agent.type_1 == 1 and agent.type_2 == 1:
+        portrayal["Shape"] = "rect"
+        portrayal["w"] = "0.3"
+        portrayal["h"] = "0.3"
+        portrayal["Color"] = "lightskyblue"
+    elif agent.type_1 == 0 and agent.type_2 == 1:
+        portrayal["Color"] = "orchid"
+        portrayal["Shape"] = "rect"
+        portrayal["w"] = "0.3"
+        portrayal["h"] = "0.3"
+    
 
     return portrayal
 
@@ -73,16 +65,16 @@ happy_chart = ChartModule([{"Label": "Pct Happy", "Color": "Black"}])
 model_params = {
     "height": SegModel.height,
     "width": SegModel.width,
-    "num_agents": UserSettableParameter('slider', "Number Agents", 
+    "num_agents": UserSettableParameter('slider', "Number of Agents", 
                                       int(0.8 * SegModel.height ** 2), 10, 
                                       SegModel.height * SegModel.width, 10),
-    "minority_pc_1": UserSettableParameter('slider', "% group B (first dimension)", 0.35, 0.00, 1.0, 0.05),
-    "minority_pc_2": UserSettableParameter('slider', "Probability of being in group A in second dimension", 0.35, 0.00, 1.0, 0.05),
-    "intolerance_1": UserSettableParameter('slider', "Intolerance on first dimension: (Desired % of matching neighbors)",
+    "minority_pc_1": UserSettableParameter('slider', "% Minority group in 1st dimension", 0.35, 0.00, 1.0, 0.05),
+    "minority_pc_2": UserSettableParameter('slider', "% Minority group in 2nd dimension", 0.35, 0.00, 1.0, 0.05),
+    "intolerance_1": UserSettableParameter('slider', "Intolerance on 1st dimension: (Minimum % of matching neighbors)",
                                           0.375, 0, 1, 0.125),
-    "intolerance_2": UserSettableParameter('slider', "Intolerance on second dimension: (Desired % of matching neighbors)" ,
+    "intolerance_2": UserSettableParameter('slider', "Intolerance on 2nd dimension: (Minimum % of matching neighbors)" ,
                                           0.375, 0, 1, 0.125),
-    "stopping_level": UserSettableParameter('slider', "Fraction of happy agents required to stop simulation" ,
+    "stopping_level": UserSettableParameter('slider', "Porportion of happy agents at which simulation stops" ,
                                           1, 0, 1, 0.1),
 }
 
